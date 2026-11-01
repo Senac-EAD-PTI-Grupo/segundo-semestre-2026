@@ -1,0 +1,425 @@
+:root {
+    --primary-color: #071d30;
+    --secondary-color: #0077cc;
+    --accent-color: #ffffff;
+    --bg-color: #f4f6f9;
+    --card-bg: #ffffff;
+    --text-color: #333333;
+    --text-light: #666666;
+    --border-color: #dddddd;
+    --danger-color: #d9534f;
+    --danger-hover: #c9302c;
+    --success-color: #3f9b3f;
+    --warning-color: #f0ad4e;
+    --warning-hover: #ec971f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, 'Segoe UI', Roboto, Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+input,
+button {
+    font: inherit;
+}
+
+/* Texto visível apenas para leitores de tela */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+/* Cabeçalho */
+header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 1.5rem 0;
+    text-align: center;
+    border-bottom: 4px solid var(--secondary-color);
+}
+
+.header-content {
+    max-width: 1000px;
+    width: 90%;
+    margin: 0 auto;
+}
+
+header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 0.3rem;
+}
+
+header p {
+    font-size: 0.95rem;
+    color: #e0e0e0;
+}
+
+.container {
+    max-width: 1000px;
+    width: 90%;
+    margin: 2rem auto;
+    flex: 1;
+}
+
+/* Cards */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.card h2 {
+    font-size: 1.3rem;
+    color: var(--primary-color);
+    margin-bottom: 1.2rem;
+    border-bottom: 2px solid var(--bg-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Toast (mensagem temporária) */
+.toast {
+    position: fixed;
+    right: 1rem;
+    bottom: 1rem;
+    max-width: calc(100% - 2rem);
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    color: white;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+}
+
+.toast.success {
+    background-color: var(--success-color);
+}
+
+.toast.error {
+    background-color: var(--danger-color);
+}
+
+/* Dialog de confirmação */
+.dialog {
+    margin: auto;
+    padding: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    width: min(90%, 380px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.dialog::backdrop {
+    background: rgba(7, 29, 48, 0.6);
+}
+
+.dialog h2 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    margin-bottom: 0.5rem;
+}
+
+.dialog-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.8rem;
+    margin-top: 1.5rem;
+}
+
+/* Formulário */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+    font-size: 0.9rem;
+}
+
+.form-group input,
+.search-group input {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-group input:focus,
+.search-group input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(0, 119, 204, 0.2);
+}
+
+.form-group input.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.error-message {
+    display: block;
+    min-height: 1.1rem;
+    margin-top: 0.25rem;
+    color: var(--danger-color);
+    font-size: 0.8rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Botões */
+.btn {
+    padding: 0.7rem 1.2rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: background-color 0.2s;
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--secondary-color);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-danger {
+    background-color: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: var(--danger-hover);
+}
+
+.btn:focus-visible,
+.btn-edit:focus-visible,
+.btn-delete:focus-visible {
+    outline: 3px solid var(--secondary-color);
+    outline-offset: 2px;
+}
+
+/* Cabeçalho da tabela */
+.table-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.table-header h2 {
+    margin-bottom: 0;
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.table-count {
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+.search-group input {
+    width: 250px;
+}
+
+/* Tabela */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+table th,
+table td {
+    padding: 0.8rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+table th {
+    background-color: #f8f9fa;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+table tbody tr:hover {
+    background-color: #f9f9f9;
+}
+
+.empty-state {
+    text-align: center;
+    color: var(--text-light);
+    padding: 2rem 0.8rem;
+}
+
+td .btn-edit,
+td .btn-delete {
+    border: none;
+    padding: 0.4rem 0.8rem;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+}
+
+.btn-edit {
+    background-color: var(--warning-color);
+    margin-right: 0.3rem;
+}
+
+.btn-edit:hover {
+    background-color: var(--warning-hover);
+}
+
+.btn-delete {
+    background-color: var(--danger-color);
+}
+
+.btn-delete:hover {
+    background-color: var(--danger-hover);
+}
+
+/* Rodapé */
+footer {
+    background-color: #222222;
+    color: #aaaaaa;
+    text-align: center;
+    padding: 1rem 0;
+    font-size: 0.85rem;
+    margin-top: auto;
+}
+
+/* Formulário em 2 colunas no desktop */
+@media (min-width: 700px) {
+    #clientForm {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 1.5rem;
+    }
+
+    .form-actions {
+        grid-column: 1 / -1;
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .table-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .search-group input {
+        width: 100%;
+    }
+
+    .form-actions {
+        flex-direction: column;
+    }
+
+    /* Tabela vira lista de cartões (o JS precisa usar data-label nas células) */
+    table {
+        min-width: 0;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table tr {
+        display: block;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+    }
+
+    table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border: none;
+        padding: 0.4rem 0.5rem;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary-color);
+        text-align: left;
+    }
+
+    td.empty-state {
+        display: block;
+        text-align: center;
+    }
+
+    td.empty-state::before {
+        content: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * {
+        transition: none !important;
+    }
+}
