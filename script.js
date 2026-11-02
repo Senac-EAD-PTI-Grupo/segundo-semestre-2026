@@ -296,7 +296,8 @@ searchInput.addEventListener('input', (e) => {
     const termoBusca = e.target.value.toLowerCase();
     const filtrados = clients.filter(client => 
         client.nome.toLowerCase().includes(termoBusca) || 
-        client.cpf.includes(termoBusca)
+        client.cpf.includes(termoBusca) ||
+        client.email.toLowerCase().includes(termoBusca)
     );
     renderTable(filtrados);
 });
