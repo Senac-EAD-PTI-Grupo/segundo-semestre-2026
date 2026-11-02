@@ -181,16 +181,40 @@ function renderTable(listaParaExibir = clients) {
             const indiceOriginal = clients.findIndex(c => c.id === client.id);
             
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td data-label="Nome">${client.nome}</td>
-                <td data-label="CPF">${client.cpf}</td>
-                <td data-label="E-mail">${client.email}</td>
-                <td data-label="Telefone">${client.telefone}</td>
-                <td data-label="Ações">
-                    <button class="btn-edit" aria-label="Editar ${client.nome}" onclick="prepararEdicao(${indiceOriginal})">Editar</button>
-                    <button class="btn-delete" aria-label="Excluir ${client.nome}" onclick="abrirModalExclusao(${indiceOriginal})">Excluir</button>
-                </td>
-            `;
+
+            // textContent evita que dados digitados sejam interpretados como HTML
+            [
+                ['Nome', client.nome],
+                ['CPF', client.cpf],
+                ['E-mail', client.email],
+                ['Telefone', client.telefone]
+            ].forEach(([rotulo, valor]) => {
+                const td = document.createElement('td');
+                td.dataset.label = rotulo;
+                td.textContent = valor;
+                tr.appendChild(td);
+            });
+
+            const tdAcoes = document.createElement('td');
+            tdAcoes.dataset.label = 'Ações';
+            tdAcoes.className = 'client-actions';
+
+            const btnEditar = document.createElement('button');
+            btnEditar.type = 'button';
+            btnEditar.className = 'btn-edit';
+            btnEditar.textContent = 'Editar';
+            btnEditar.setAttribute('aria-label', `Editar ${client.nome}`);
+            btnEditar.addEventListener('click', () => prepararEdicao(indiceOriginal));
+
+            const btnExcluir = document.createElement('button');
+            btnExcluir.type = 'button';
+            btnExcluir.className = 'btn-delete';
+            btnExcluir.textContent = 'Excluir';
+            btnExcluir.setAttribute('aria-label', `Excluir ${client.nome}`);
+            btnExcluir.addEventListener('click', () => abrirModalExclusao(indiceOriginal));
+
+            tdAcoes.append(btnEditar, btnExcluir);
+            tr.appendChild(tdAcoes);
             clientTableBody.appendChild(tr);
         });
     }

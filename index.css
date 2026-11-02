@@ -352,63 +352,36 @@ table td {
     border-bottom: 1px solid var(--border-color);
 }
 
-#tabela-clientes th:last-child {
-    width: 125px;
-    text-align: right;
-}
-
 table th {
     background-color: #f8f9fa;
     color: var(--primary-color);
     font-weight: 600;
+    white-space: nowrap;
 }
 
 table tbody tr:hover {
     background-color: #f9f9f9;
 }
 
-/* Remove a seta padrão das informações expansíveis */
-#clientTableBody summary {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* CPF e telefone não quebram linha */
+#clientTableBody td[data-label="CPF"],
+#clientTableBody td[data-label="Telefone"] {
+    white-space: nowrap;
 }
 
-#clientTableBody summary::-webkit-details-marker {
-    display: none;
-}
-
-.client-row {
-    position: relative;
-}
-
-.client-row summary {
-    padding-right: 100px;
-}
-
-.client-row summary:focus-visible {
-    outline: 3px solid var(--secondary-color);
-    outline-offset: 2px;
-}
-
-.client-data {
+#clientTableBody td[data-label="E-mail"] {
     overflow-wrap: anywhere;
 }
 
+/* Coluna de ações alinhada à direita */
+#tabela-clientes th:last-child,
 .client-actions {
-    position: absolute;
-    right: 0.8rem;
-    top: 0.4rem;
-    display: flex;
-    gap: 0.4rem;
+    text-align: right;
+    white-space: nowrap;
 }
 
-.client-actions button {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    margin: 0;
+.client-actions button + button {
+    margin-left: 0.4rem;
 }
 
 .empty-state {
@@ -480,6 +453,54 @@ footer {
 
     .search-group input {
         width: 100%;
+    }
+
+    /* Tabela vira lista de cartões no celular */
+    #tabela-clientes thead {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+    }
+
+    #tabela-clientes,
+    #clientTableBody,
+    #clientTableBody tr,
+    #clientTableBody td {
+        display: block;
+        width: 100%;
+    }
+
+    #clientTableBody tr {
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        margin-bottom: 0.8rem;
+        padding: 0.4rem 0;
+    }
+
+    #clientTableBody td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border-bottom: none;
+        padding: 0.4rem 0.8rem;
+        text-align: right;
+    }
+
+    #clientTableBody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary-color);
+        text-align: left;
+    }
+
+    #clientTableBody td.client-actions {
+        justify-content: flex-end;
+    }
+
+    #clientTableBody td.client-actions::before {
+        content: none;
     }
 
     .form-actions {
