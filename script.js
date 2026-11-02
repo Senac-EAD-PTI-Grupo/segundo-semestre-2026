@@ -82,6 +82,12 @@ function testarCPFValido(strCPF) {
     return true;
 }
 
+// Verifica se o CPF ja pertence a outro cliente (na edicao, ignora o proprio cliente)
+function cpfJaCadastrado(cpf, idAtual) {
+    const cpfLimpo = cpf.replace(/\D/g, '');
+    return clients.some(c => c.id !== idAtual && c.cpf.replace(/\D/g, '') === cpfLimpo);
+}
+
 function validarFormulario() {
     let isValid = true;
 
@@ -94,6 +100,9 @@ function validarFormulario() {
         isValid = false;
     } else if (!testarCPFValido(cpfInput.value)) {
         document.getElementById('erro-cpf').innerText = 'Este CPF é inválido. Digite um documento real.';
+        isValid = false;
+    } else if (cpfJaCadastrado(cpfInput.value, clientIdInput.value)) {
+        document.getElementById('erro-cpf').innerText = 'Já existe um cliente cadastrado com este CPF.';
         isValid = false;
     } else {
         document.getElementById('erro-cpf').innerText = '';
