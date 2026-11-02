@@ -1,6 +1,7 @@
 :root {
     --primary-color: #071d30;
     --secondary-color: #0077cc;
+    --accent-color: #ffffff;
     --bg-color: #f4f6f9;
     --card-bg: #ffffff;
     --text-color: #333333;
@@ -9,6 +10,8 @@
     --danger-color: #d9534f;
     --danger-hover: #c9302c;
     --success-color: #3f9b3f;
+    --warning-color: #f0ad4e;
+    --warning-hover: #ec971f;
 }
 
 * {
@@ -59,31 +62,9 @@ header {
 }
 
 .header-content {
-    display: flex;
     max-width: 1000px;
     width: 90%;
     margin: 0 auto;
-    align-items: center;
-    gap: 1.5rem;
-}
-
-.header-text {
-    text-align: left;
-}
-
-.logo-empresa {
-    width: 80px;
-    height: 80px;
-    border: 2px dashed white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.logo-empresa img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
 }
 
 header h1 {
@@ -142,58 +123,17 @@ header p {
     background-color: var(--danger-color);
 }
 
-/* Janelas modais: confirmação de exclusão e cadastro */
-.dialog,
-.client-dialog {
+/* Dialog de confirmação */
+.dialog {
     margin: auto;
+    padding: 1.5rem;
     border: none;
     border-radius: 8px;
-    background-color: var(--card-bg);
+    width: min(90%, 380px);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
-.dialog {
-    width: min(90%, 380px);
-    padding: 1.5rem;
-}
-
-.client-dialog {
-    width: min(90%, 600px);
-    max-height: 90dvh;
-    overflow-y: auto;
-    padding: 0;
-}
-
-.client-dialog .card {
-    margin-bottom: 0;
-    box-shadow: none;
-}
-
-.dialog-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.dialog-header h2 {
-    margin-bottom: 0;
-    border-bottom: none;
-    padding-bottom: 0;
-}
-
-.dialog-close {
-    width: 40px;
-    height: 40px;
-    border: none;
-    border-radius: 8px;
-    background-color: transparent;
-    color: var(--primary-color);
-    font-size: 1.5rem;
-    cursor: default;
-}
-
-.dialog::backdrop,
-.client-dialog::backdrop {
+.dialog::backdrop {
     background: rgba(7, 29, 48, 0.6);
 }
 
@@ -302,13 +242,12 @@ header p {
 
 .btn:focus-visible,
 .btn-edit:focus-visible,
-.btn-delete:focus-visible,
-.dialog-close:focus-visible {
+.btn-delete:focus-visible {
     outline: 3px solid var(--secondary-color);
     outline-offset: 2px;
 }
 
-/* CABEÇALHO DA TABELA */
+/* Cabeçalho da tabela */
 .table-header {
     display: flex;
     justify-content: space-between;
@@ -333,7 +272,7 @@ header p {
     width: 250px;
 }
 
-/* TABELA */
+/* Tabela */
 .table-responsive {
     overflow-x: auto;
     margin-top: 1rem;
@@ -341,6 +280,7 @@ header p {
 
 table {
     width: 100%;
+    min-width: 600px;
     border-collapse: collapse;
     text-align: left;
     font-size: 0.95rem;
@@ -352,11 +292,6 @@ table td {
     border-bottom: 1px solid var(--border-color);
 }
 
-#tabela-clientes th:last-child {
-    width: 125px;
-    text-align: right;
-}
-
 table th {
     background-color: #f8f9fa;
     color: var(--primary-color);
@@ -365,50 +300,6 @@ table th {
 
 table tbody tr:hover {
     background-color: #f9f9f9;
-}
-
-/* Remove a seta padrão das informações expansíveis */
-#clientTableBody summary {
-    list-style: none;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-#clientTableBody summary::-webkit-details-marker {
-    display: none;
-}
-
-.client-row {
-    position: relative;
-}
-
-.client-row summary {
-    padding-right: 100px;
-}
-
-.client-row summary:focus-visible {
-    outline: 3px solid var(--secondary-color);
-    outline-offset: 2px;
-}
-
-.client-data {
-    overflow-wrap: anywhere;
-}
-
-.client-actions {
-    position: absolute;
-    right: 0.8rem;
-    top: 0.4rem;
-    display: flex;
-    gap: 0.4rem;
-}
-
-.client-actions button {
-    width: 40px;
-    height: 40px;
-    padding: 0;
-    margin: 0;
 }
 
 .empty-state {
@@ -425,17 +316,24 @@ td .btn-delete {
     cursor: pointer;
     font-size: 0.85rem;
     font-weight: 600;
-    color: var(--primary-color);
+    color: white;
 }
 
-.btn-edit,
+.btn-edit {
+    background-color: var(--warning-color);
+    margin-right: 0.3rem;
+}
+
+.btn-edit:hover {
+    background-color: var(--warning-hover);
+}
+
 .btn-delete {
-    background-color: transparent;
+    background-color: var(--danger-color);
 }
 
-.btn-edit:hover,
 .btn-delete:hover {
-    background-color: var(--bg-color);
+    background-color: var(--danger-hover);
 }
 
 /* Rodapé */
@@ -447,8 +345,6 @@ footer {
     font-size: 0.85rem;
     margin-top: auto;
 }
-
-/* RESPONSIVIDADE */
 
 /* Formulário em 2 colunas no desktop */
 @media (min-width: 700px) {
@@ -463,19 +359,11 @@ footer {
     }
 }
 
+/* Mobile */
 @media (max-width: 600px) {
     .table-header {
         flex-direction: column;
         align-items: stretch;
-    }
-
-    .header-content {
-        flex-direction: column;
-    }
-
-    .header-text {
-        width: 100%;
-        text-align: center;
     }
 
     .search-group input {
@@ -484,6 +372,49 @@ footer {
 
     .form-actions {
         flex-direction: column;
+    }
+
+    /* Tabela vira lista de cartões (o JS precisa usar data-label nas células) */
+    table {
+        min-width: 0;
+    }
+
+    table thead {
+        display: none;
+    }
+
+    table tr {
+        display: block;
+        border: 1px solid var(--border-color);
+        border-radius: 6px;
+        margin-bottom: 1rem;
+        padding: 0.5rem;
+    }
+
+    table td {
+        display: flex;
+        justify-content: space-between;
+        gap: 1rem;
+        border: none;
+        padding: 0.4rem 0.5rem;
+        text-align: right;
+        word-break: break-word;
+    }
+
+    table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: var(--primary-color);
+        text-align: left;
+    }
+
+    td.empty-state {
+        display: block;
+        text-align: center;
+    }
+
+    td.empty-state::before {
+        content: none;
     }
 }
 
