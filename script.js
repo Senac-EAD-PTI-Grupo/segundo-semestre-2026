@@ -88,6 +88,11 @@ function cpfJaCadastrado(cpf, idAtual) {
     return clients.some(c => c.id !== idAtual && c.cpf.replace(/\D/g, '') === cpfLimpo);
 }
 
+// Formato nome@dominio.ext: sem espacos, um unico @ e dominio com ponto e extensao de 2+ letras
+function emailValido(email) {
+    return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-zA-Z]{2,}$/.test(email);
+}
+
 function validarFormulario() {
     let isValid = true;
 
@@ -107,8 +112,8 @@ function validarFormulario() {
     } else {
         document.getElementById('erro-cpf').innerText = '';
     }
-    if (!emailInput.value.includes('@') || emailInput.value.trim().length < 5) {
-        document.getElementById('erro-email').innerText = 'Digite um e-mail válido.';
+    if (!emailValido(emailInput.value.trim())) {
+        document.getElementById('erro-email').innerText = 'Digite um e-mail válido, no formato nome@dominio.com.';
         isValid = false;
     }
     if (telefoneInput.value.length < 14) {
