@@ -93,8 +93,8 @@
                     <button type="button" id="newClientBtn" class="btn btn-primary">+ Novo cliente</button>
                 </div>
                 <div class="search-group">
-                    <label for="searchInput" class="sr-only">Buscar cliente por nome ou CPF</label>
-                    <input type="search" id="searchInput" placeholder="Buscar por nome ou CPF...">
+                    <label for="searchInput" class="sr-only">Buscar cliente por nome, CPF ou e-mail</label>
+                    <input type="search" id="searchInput" placeholder="Buscar por nome, CPF ou e-mail...">
                 </div>
             </div>
 
@@ -104,37 +104,13 @@
                     <thead>
                         <tr>
                             <th scope="col">Nome</th>
+                            <th scope="col">CPF</th>
+                            <th scope="col">E-mail</th>
+                            <th scope="col">Telefone</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
-                    <!--
-                        TODO JS: Criar os registros dinamicamente em #clientTableBody.
-                        Cada registro usa 1 <tr> e 1 <td colspan="2" class="client-row">.
-                        O <summary> é o controle nativo de expandir/recolher (sem JS).
-                        Os botões .btn-edit e .btn-delete exigem tratamento pelo JS.
-                        Atualizar #clientCount e alternar #emptyState conforme os dados.
-
-                        EXEMPLO DE REGISTRO, APENAS REFERÊNCIA, NÃO EXIBIDO:
-                        <tr>
-                            <td colspan="2" class="client-row">
-                                <details>
-                                    <summary>
-                                        <span>Maria Oliveira</span>
-                                        <span aria-hidden="true">ⓘ</span>
-                                    </summary>
-                                    <div class="client-data">
-                                        <p>CPF: 000.000.000-00</p>
-                                        <p>E-mail: maria@exemplo.com</p>
-                                        <p>Telefone: (61) 99999-9999</p>
-                                    </div>
-                                </details>
-                                <div class="client-actions">
-                                    <button type="button" class="btn-edit" aria-label="Editar Maria Oliveira">✏️</button>
-                                    <button type="button" class="btn-delete" aria-label="Excluir Maria Oliveira">🗑️</button>
-                                </div>
-                            </td>
-                        </tr>
-                    -->
+                    <!-- As linhas são criadas pelo script.js: 1 <tr> por cliente, com uma <td> para cada coluna -->
                     <tbody id="clientTableBody"></tbody>
                 </table>
             </div>
