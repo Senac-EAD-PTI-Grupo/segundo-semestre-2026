@@ -13,63 +13,84 @@
 <body>
     <header>
         <div class="header-content">
-            <h1>Gestão de Clientes</h1>
-            <p>CRM para Microempreendedores e Prestadores de Serviços</p>
+            <!-- TODO JS: Permitir selecionar, validar, salvar e recuperar o logotipo da empresa.
+                 Sem imagem cadastrada, manter o texto provisório LOGO. -->
+            <div class="logo-empresa">
+                <span id="logo-placeholder" aria-hidden="true">LOGO</span>
+                <img id="logo-imagem" alt="Logotipo da empresa" hidden>
+            </div>
+
+            <div class="header-text">
+                <h1>Gestão de Clientes</h1>
+                <p>CRM para Microempreendedores e Prestadores de Serviços</p>
+            </div>
         </div>
     </header>
 
     <main class="container">
+        <!-- TODO JS: #newClientBtn abre #clientDialog com showModal();
+             #closeClientDialog fecha com close(); limpar os campos no novo cadastro.
+             Na edição, preencher este mesmo formulário e atualizar #titulo-form.
+             Após salvar com sucesso, fechar o diálogo e atualizar #clientTableBody e #clientCount.
+             Como o form usa novalidate, validar os dados no JavaScript. -->
+        <dialog id="clientDialog" class="client-dialog" aria-labelledby="titulo-form">
+            <section class="card">
+                <div class="dialog-header">
+                    <h2 id="titulo-form">Cadastrar Novo Cliente</h2>
 
-        <section class="card" aria-labelledby="titulo-form">
-            <h2 id="titulo-form">Cadastrar Novo Cliente</h2>
+                    <button type="button" id="closeClientDialog" class="dialog-close"
+                            aria-label="Fechar janela de cadastro">&times;</button>
+                </div>
 
-            <form id="clientForm" novalidate>
-                <input type="hidden" id="clientId">
+                <form id="clientForm" novalidate>
+                    <input type="hidden" id="clientId">
 
-                <div class="form-group">
-                    <label for="nome">Nome completo</label>
-                    <input type="text" id="nome" name="nome" required minlength="3" maxlength="100"
+                    <div class="form-group">
+                        <label for="nome">Nome completo</label>
+                        <input type="text" id="nome" name="nome" required minlength="3" maxlength="100"
                            autocomplete="name" placeholder="Digite o nome do cliente"
                            aria-describedby="erro-nome">
-                    <small class="error-message" id="erro-nome" role="alert"></small>
-                </div>
+                        <small class="error-message" id="erro-nome" role="alert"></small>
+                    </div>
 
-                <div class="form-group">
-                    <label for="cpf">CPF</label>
-                    <input type="text" id="cpf" name="cpf" required inputmode="numeric" maxlength="14"
+                    <div class="form-group">
+                        <label for="cpf">CPF</label>
+                        <input type="text" id="cpf" name="cpf" required inputmode="numeric" maxlength="14"
                            autocomplete="off" placeholder="000.000.000-00"
                            aria-describedby="erro-cpf">
-                    <small class="error-message" id="erro-cpf" role="alert"></small>
-                </div>
+                        <small class="error-message" id="erro-cpf" role="alert"></small>
+                    </div>
 
-                <div class="form-group">
-                    <label for="email">E-mail</label>
-                    <input type="email" id="email" name="email" required maxlength="120"
+                    <div class="form-group">
+                        <label for="email">E-mail</label>
+                        <input type="email" id="email" name="email" required maxlength="120"
                            autocomplete="email" placeholder="cliente@email.com"
                            aria-describedby="erro-email">
-                    <small class="error-message" id="erro-email" role="alert"></small>
-                </div>
+                        <small class="error-message" id="erro-email" role="alert"></small>
+                    </div>
 
-                <div class="form-group">
-                    <label for="telefone">Telefone</label>
-                    <input type="tel" id="telefone" name="telefone" required inputmode="tel" maxlength="15"
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" required inputmode="tel" maxlength="15"
                            autocomplete="tel" placeholder="(00) 00000-0000"
                            aria-describedby="erro-telefone">
-                    <small class="error-message" id="erro-telefone" role="alert"></small>
-                </div>
+                        <small class="error-message" id="erro-telefone" role="alert"></small>
+                    </div>
 
-                <div class="form-actions">
-                    <button type="submit" id="submitBtn" class="btn btn-primary">Salvar cliente</button>
-                    <button type="button" id="cancelEditBtn" class="btn btn-secondary" hidden>Cancelar edição</button>
-                </div>
-            </form>
-        </section>
+                    <div class="form-actions">
+                        <button type="submit" id="submitBtn" class="btn btn-primary">Salvar cliente</button>
+                        <button type="button" id="cancelEditBtn" class="btn btn-secondary" hidden>Cancelar edição</button>
+                    </div>
+                </form>
+            </section>
+        </dialog>
 
         <section class="card" aria-labelledby="titulo-lista">
             <div class="table-header">
                 <div>
                     <h2 id="titulo-lista">Clientes cadastrados</h2>
                     <p id="clientCount" class="table-count" aria-live="polite">0 clientes</p>
+                    <button type="button" id="newClientBtn" class="btn btn-primary">+ Novo cliente</button>
                 </div>
                 <div class="search-group">
                     <label for="searchInput" class="sr-only">Buscar cliente por nome ou CPF</label>
@@ -83,23 +104,34 @@
                     <thead>
                         <tr>
                             <th scope="col">Nome</th>
-                            <th scope="col">CPF</th>
-                            <th scope="col">E-mail</th>
-                            <th scope="col">Telefone</th>
                             <th scope="col">Ações</th>
                         </tr>
                     </thead>
                     <!--
-                        O JavaScript deve montar cada linha assim (data-label faz a tabela
-                        virar cartões no celular):
+                        TODO JS: Criar os registros dinamicamente em #clientTableBody.
+                        Cada registro usa 1 <tr> e 1 <td colspan="2" class="client-row">.
+                        O <summary> é o controle nativo de expandir/recolher (sem JS).
+                        Os botões .btn-edit e .btn-delete exigem tratamento pelo JS.
+                        Atualizar #clientCount e alternar #emptyState conforme os dados.
+
+                        EXEMPLO DE REGISTRO, APENAS REFERÊNCIA, NÃO EXIBIDO:
                         <tr>
-                            <td data-label="Nome">...</td>
-                            <td data-label="CPF">...</td>
-                            <td data-label="E-mail">...</td>
-                            <td data-label="Telefone">...</td>
-                            <td data-label="Ações">
-                                <button class="btn-edit" aria-label="Editar NOME">Editar</button>
-                                <button class="btn-delete" aria-label="Excluir NOME">Excluir</button>
+                            <td colspan="2" class="client-row">
+                                <details>
+                                    <summary>
+                                        <span>Maria Oliveira</span>
+                                        <span aria-hidden="true">ⓘ</span>
+                                    </summary>
+                                    <div class="client-data">
+                                        <p>CPF: 000.000.000-00</p>
+                                        <p>E-mail: maria@exemplo.com</p>
+                                        <p>Telefone: (61) 99999-9999</p>
+                                    </div>
+                                </details>
+                                <div class="client-actions">
+                                    <button type="button" class="btn-edit" aria-label="Editar Maria Oliveira">✏️</button>
+                                    <button type="button" class="btn-delete" aria-label="Excluir Maria Oliveira">🗑️</button>
+                                </div>
                             </td>
                         </tr>
                     -->
@@ -107,7 +139,7 @@
                 </table>
             </div>
 
-            <p id="emptyState" class="empty-state" hidden>Nenhum cliente cadastrado. Use o formulário acima para adicionar o primeiro.</p>
+            <p id="emptyState" class="empty-state">Nenhum cliente cadastrado. Use o botão acima para adicionar o primeiro.</p>
         </section>
     </main>
 
