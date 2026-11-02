@@ -15,6 +15,9 @@ const toast = document.getElementById('toast');
 const confirmDialog = document.getElementById('confirmDialog');
 const confirmCancel = document.getElementById('confirmCancel');
 const confirmDelete = document.getElementById('confirmDelete');
+const clientDialog = document.getElementById('clientDialog');
+const newClientBtn = document.getElementById('newClientBtn');
+const closeClientDialog = document.getElementById('closeClientDialog');
 
 let clients = JSON.parse(localStorage.getItem('crm_clients')) || [];
 let indexParaExcluir = null;
@@ -134,11 +137,35 @@ clientForm.addEventListener('submit', (e) => {
             clients[index] = clientData;
             showToast('Dados do cliente atualizados!', 'success');
         }
-        resetarFormulario();
     }
 
     salvarEAtualizarTELA();
-    clientForm.reset();
+    fecharModalCliente();
+});
+
+// Modal de cadastro/edicao de cliente
+function abrirModalCliente() {
+    clientDialog.showModal();
+    nomeInput.focus();
+}
+
+function fecharModalCliente() {
+    clientDialog.close();
+}
+
+newClientBtn.addEventListener('click', () => {
+    resetarFormulario();
+    abrirModalCliente();
+});
+
+closeClientDialog.addEventListener('click', fecharModalCliente);
+
+// Limpa o formulario sempre que o modal fecha (botao X, tecla Esc ou apos salvar)
+clientDialog.addEventListener('close', resetarFormulario);
+
+// Fecha o modal ao clicar fora dele (no fundo escurecido)
+clientDialog.addEventListener('click', (e) => {
+    if (e.target === clientDialog) fecharModalCliente();
 });
 
 function renderTable(listaParaExibir = clients) {
@@ -186,11 +213,11 @@ window.prepararEdicao = function(index) {
     tituloForm.innerText = "Editar Dados do Cliente";
     submitBtn.innerText = "Atualizar cliente";
     cancelEditBtn.hidden = false;
-    
-    nomeInput.focus();
+
+    abrirModalCliente();
 };
 
-cancelEditBtn.addEventListener('click', resetarFormulario);
+cancelEditBtn.addEventListener('click', fecharModalCliente);
 
 function resetarFormulario() {
     clientForm.reset();
