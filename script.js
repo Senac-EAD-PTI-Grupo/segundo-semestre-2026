@@ -15,6 +15,9 @@ const toast = document.getElementById('toast');
 const confirmDialog = document.getElementById('confirmDialog');
 const confirmCancel = document.getElementById('confirmCancel');
 const confirmDelete = document.getElementById('confirmDelete');
+const clientDialog = document.getElementById('clientDialog');
+const newClientBtn = document.getElementById('newClientBtn');
+const closeClientDialog = document.getElementById('closeClientDialog');
 
 let clients = JSON.parse(localStorage.getItem('crm_clients')) || [];
 let indexParaExcluir = null;
@@ -79,6 +82,17 @@ function testarCPFValido(strCPF) {
     return true;
 }
 
+// Verifica se o CPF ja pertence a outro cliente (na edicao, ignora o proprio cliente)
+function cpfJaCadastrado(cpf, idAtual) {
+    const cpfLimpo = cpf.replace(/\D/g, '');
+    return clients.some(c => c.id !== idAtual && c.cpf.replace(/\D/g, '') === cpfLimpo);
+}
+
+// Formato nome@dominio.ext: sem espacos, um unico @ e dominio com ponto e extensao de 2+ letras
+function emailValido(email) {
+    return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[a-zA-Z]{2,}$/.test(email);
+}
+
 function validarFormulario() {
     let isValid = true;
 
@@ -92,11 +106,14 @@ function validarFormulario() {
     } else if (!testarCPFValido(cpfInput.value)) {
         document.getElementById('erro-cpf').innerText = 'Este CPF é inválido. Digite um documento real.';
         isValid = false;
+    } else if (cpfJaCadastrado(cpfInput.value, clientIdInput.value)) {
+        document.getElementById('erro-cpf').innerText = 'Já existe um cliente cadastrado com este CPF.';
+        isValid = false;
     } else {
         document.getElementById('erro-cpf').innerText = '';
     }
-    if (!emailInput.value.includes('@') || emailInput.value.trim().length < 5) {
-        document.getElementById('erro-email').innerText = 'Digite um e-mail válido.';
+    if (!emailValido(emailInput.value.trim())) {
+        document.getElementById('erro-email').innerText = 'Digite um e-mail válido, no formato nome@dominio.com.';
         isValid = false;
     }
     if (telefoneInput.value.length < 14) {
@@ -134,11 +151,35 @@ clientForm.addEventListener('submit', (e) => {
             clients[index] = clientData;
             showToast('Dados do cliente atualizados!', 'success');
         }
-        resetarFormulario();
     }
 
     salvarEAtualizarTELA();
-    clientForm.reset();
+    fecharModalCliente();
+});
+
+// Modal de cadastro/edicao de cliente
+function abrirModalCliente() {
+    clientDialog.showModal();
+    nomeInput.focus();
+}
+
+function fecharModalCliente() {
+    clientDialog.close();
+}
+
+newClientBtn.addEventListener('click', () => {
+    resetarFormulario();
+    abrirModalCliente();
+});
+
+closeClientDialog.addEventListener('click', fecharModalCliente);
+
+// Limpa o formulario sempre que o modal fecha (botao X, tecla Esc ou apos salvar)
+clientDialog.addEventListener('close', resetarFormulario);
+
+// Fecha o modal ao clicar fora dele (no fundo escurecido)
+clientDialog.addEventListener('click', (e) => {
+    if (e.target === clientDialog) fecharModalCliente();
 });
 
 function renderTable(listaParaExibir = clients) {
@@ -154,16 +195,40 @@ function renderTable(listaParaExibir = clients) {
             const indiceOriginal = clients.findIndex(c => c.id === client.id);
             
             const tr = document.createElement('tr');
-            tr.innerHTML = `
-                <td data-label="Nome">${client.nome}</td>
-                <td data-label="CPF">${client.cpf}</td>
-                <td data-label="E-mail">${client.email}</td>
-                <td data-label="Telefone">${client.telefone}</td>
-                <td data-label="Ações">
-                    <button class="btn-edit" aria-label="Editar ${client.nome}" onclick="prepararEdicao(${indiceOriginal})">Editar</button>
-                    <button class="btn-delete" aria-label="Excluir ${client.nome}" onclick="abrirModalExclusao(${indiceOriginal})">Excluir</button>
-                </td>
-            `;
+
+            // textContent evita que dados digitados sejam interpretados como HTML
+            [
+                ['Nome', client.nome],
+                ['CPF', client.cpf],
+                ['E-mail', client.email],
+                ['Telefone', client.telefone]
+            ].forEach(([rotulo, valor]) => {
+                const td = document.createElement('td');
+                td.dataset.label = rotulo;
+                td.textContent = valor;
+                tr.appendChild(td);
+            });
+
+            const tdAcoes = document.createElement('td');
+            tdAcoes.dataset.label = 'Ações';
+            tdAcoes.className = 'client-actions';
+
+            const btnEditar = document.createElement('button');
+            btnEditar.type = 'button';
+            btnEditar.className = 'btn-edit';
+            btnEditar.textContent = 'Editar';
+            btnEditar.setAttribute('aria-label', `Editar ${client.nome}`);
+            btnEditar.addEventListener('click', () => prepararEdicao(indiceOriginal));
+
+            const btnExcluir = document.createElement('button');
+            btnExcluir.type = 'button';
+            btnExcluir.className = 'btn-delete';
+            btnExcluir.textContent = 'Excluir';
+            btnExcluir.setAttribute('aria-label', `Excluir ${client.nome}`);
+            btnExcluir.addEventListener('click', () => abrirModalExclusao(indiceOriginal));
+
+            tdAcoes.append(btnEditar, btnExcluir);
+            tr.appendChild(tdAcoes);
             clientTableBody.appendChild(tr);
         });
     }
@@ -186,11 +251,11 @@ window.prepararEdicao = function(index) {
     tituloForm.innerText = "Editar Dados do Cliente";
     submitBtn.innerText = "Atualizar cliente";
     cancelEditBtn.hidden = false;
-    
-    nomeInput.focus();
+
+    abrirModalCliente();
 };
 
-cancelEditBtn.addEventListener('click', resetarFormulario);
+cancelEditBtn.addEventListener('click', fecharModalCliente);
 
 function resetarFormulario() {
     clientForm.reset();
@@ -231,7 +296,8 @@ searchInput.addEventListener('input', (e) => {
     const termoBusca = e.target.value.toLowerCase();
     const filtrados = clients.filter(client => 
         client.nome.toLowerCase().includes(termoBusca) || 
-        client.cpf.includes(termoBusca)
+        client.cpf.includes(termoBusca) ||
+        client.email.toLowerCase().includes(termoBusca)
     );
     renderTable(filtrados);
 });
