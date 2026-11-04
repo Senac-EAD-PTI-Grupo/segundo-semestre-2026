@@ -299,9 +299,12 @@ confirmDelete.addEventListener('click', () => {
 // Filtro de busca em tempo real
 searchInput.addEventListener('input', (e) => {
     const termoBusca = e.target.value.toLowerCase();
-    const filtrados = clients.filter(client => 
-        client.nome.toLowerCase().includes(termoBusca) || 
-        client.cpf.includes(termoBusca) ||
+    // CPF comparado so pelos digitos, para achar com ou sem pontuacao.
+    // Se a busca nao tem digitos (ex.: um nome), nao compara o CPF: texto vazio "combinaria" com todos.
+    const digitosBusca = termoBusca.replace(/\D/g, '');
+    const filtrados = clients.filter(client =>
+        client.nome.toLowerCase().includes(termoBusca) ||
+        (digitosBusca !== '' && client.cpf.replace(/\D/g, '').includes(digitosBusca)) ||
         client.email.toLowerCase().includes(termoBusca)
     );
     renderTable(filtrados);
