@@ -40,11 +40,16 @@ cpfInput.addEventListener('input', (e) => {
 telefoneInput.addEventListener('input', (e) => {
     let value = e.target.value.replace(/\D/g, '');
     if (value.length > 11) value = value.slice(0, 11);
-    
-    if (value.length > 6) {
+
+    if (value.length > 10) {
+        // celular completo: (11) 98765-4321
         value = value.replace(/^(\d{2})(\d{5})(\d{4})$/, '($1) $2-$3');
+    } else if (value.length > 6) {
+        // fixo, ou celular ainda sendo digitado: (11) 3333-4444
+        value = value.replace(/^(\d{2})(\d{4})(\d+)$/, '($1) $2-$3');
     } else if (value.length > 2) {
-        value = value.replace(/^(\d{2})(\d{1,5})$/, '($1) $2');
+        // só DDD + começo do número: (11) 9876
+        value = value.replace(/^(\d{2})(\d+)$/, '($1) $2');
     }
     e.target.value = value;
 });
@@ -294,9 +299,12 @@ confirmDelete.addEventListener('click', () => {
 // Filtro de busca em tempo real
 searchInput.addEventListener('input', (e) => {
     const termoBusca = e.target.value.toLowerCase();
-    const filtrados = clients.filter(client => 
-        client.nome.toLowerCase().includes(termoBusca) || 
-        client.cpf.includes(termoBusca) ||
+    // CPF comparado so pelos digitos, para achar com ou sem pontuacao.
+    // Se a busca nao tem digitos (ex.: um nome), nao compara o CPF: texto vazio "combinaria" com todos.
+    const digitosBusca = termoBusca.replace(/\D/g, '');
+    const filtrados = clients.filter(client =>
+        client.nome.toLowerCase().includes(termoBusca) ||
+        (digitosBusca !== '' && client.cpf.replace(/\D/g, '').includes(digitosBusca)) ||
         client.email.toLowerCase().includes(termoBusca)
     );
     renderTable(filtrados);
