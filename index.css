@@ -189,7 +189,16 @@ header p {
     background-color: transparent;
     color: var(--primary-color);
     font-size: 1.5rem;
-    cursor: default;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-close:hover {
+    background-color: var(--bg-color);
+    color: var(--secondary-color);
 }
 
 .dialog::backdrop,
