@@ -182,9 +182,18 @@ closeClientDialog.addEventListener('click', fecharModalCliente);
 // Limpa o formulario sempre que o modal fecha (botao X, tecla Esc ou apos salvar)
 clientDialog.addEventListener('close', resetarFormulario);
 
-// Fecha o modal ao clicar fora dele (no fundo escurecido)
+let ponteiroIniciouForaDoModal = false;
+
+// Fecha somente quando o clique começa e termina fora do conteúdo do modal.
+clientDialog.addEventListener('pointerdown', (e) => {
+    ponteiroIniciouForaDoModal = e.target === clientDialog;
+});
+
 clientDialog.addEventListener('click', (e) => {
-    if (e.target === clientDialog) fecharModalCliente();
+    const clicouForaDoModal = e.target === clientDialog && ponteiroIniciouForaDoModal;
+    ponteiroIniciouForaDoModal = false;
+
+    if (clicouForaDoModal) fecharModalCliente();
 });
 
 function renderTable(listaParaExibir = clients) {
@@ -298,9 +307,13 @@ confirmDelete.addEventListener('click', () => {
 
 // Filtro de busca em tempo real
 searchInput.addEventListener('input', (e) => {
-    const termoBusca = e.target.value.toLowerCase();
+    const termoBusca = e.target.value.trim().toLowerCase();
+    if (termoBusca === '') {
+        renderTable(clients);
+        return;
+    }
+
     // CPF comparado so pelos digitos, para achar com ou sem pontuacao.
-    // Se a busca nao tem digitos (ex.: um nome), nao compara o CPF: texto vazio "combinaria" com todos.
     const digitosBusca = termoBusca.replace(/\D/g, '');
     const filtrados = clients.filter(client =>
         client.nome.toLowerCase().includes(termoBusca) ||
