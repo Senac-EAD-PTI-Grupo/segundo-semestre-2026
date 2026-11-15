@@ -182,9 +182,18 @@ closeClientDialog.addEventListener('click', fecharModalCliente);
 // Limpa o formulario sempre que o modal fecha (botao X, tecla Esc ou apos salvar)
 clientDialog.addEventListener('close', resetarFormulario);
 
-// Fecha o modal ao clicar fora dele (no fundo escurecido)
+let ponteiroIniciouForaDoModal = false;
+
+// Fecha somente quando o clique começa e termina fora do conteúdo do modal.
+clientDialog.addEventListener('pointerdown', (e) => {
+    ponteiroIniciouForaDoModal = e.target === clientDialog;
+});
+
 clientDialog.addEventListener('click', (e) => {
-    if (e.target === clientDialog) fecharModalCliente();
+    const clicouForaDoModal = e.target === clientDialog && ponteiroIniciouForaDoModal;
+    ponteiroIniciouForaDoModal = false;
+
+    if (clicouForaDoModal) fecharModalCliente();
 });
 
 function renderTable(listaParaExibir = clients) {
